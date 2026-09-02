@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Interview — {{ company.name }} · CompanyTwin AI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ company.name }} — Digital Twin Interview</h1>
+</div>
+
+<div class="interview-meta">
+  <span class="step-indicator" aria-live="polite">Question {{ progress|add:1 }} of {{ total }}</span>
+</div>
+
+<div class="progress-track" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="{{ total }}" aria-label="Interview progress">
+  <div class="progress-fill" style="width: {% widthratio progress total 100 %}%;"></div>
+</div>
+
+<span class="persona-tag">{{ persona_label }}</span>
+<div class="chat-question" role="status" aria-live="polite">{{ question.question }}</div>
+
+<form method="post" id="answer-form">
+  {% csrf_token %}
+  <input type="hidden" name="question_id" value="{{ question.id }}">
+  <input type="hidden" name="started_at" id="started_at" value="{{ now_ts }}">
+  <div class="field">
+    <label for="answer">Your answer</label>
+    <textarea id="answer" name="answer" required style="min-height:140px;" placeholder="Type your response..." aria-describedby="answer-help"></textarea>
+    <p id="answer-help" class="helptext">Answer as you would in a real interview — the next question is generated based on what you write here.</p>
+  </div>
+  <button type="submit" class="btn" id="submit-btn">
+    {% if progress|add:1 == total %}Submit final answer{% else %}Submit answer{% endif %}
+  </button>
+  <p class="next-step-note" id="processing-note" hidden>Scoring your answer and preparing the next question…</p>
+</form>
+
+<script>
+  document.getElementById('started_at').value = Date.now() / 1000;
+  document.getElementById('answer-form').addEventListener('submit', function () {
+    var btn = document.getElementById('submit-btn');
+    btn.setAttribute('aria-disabled', 'true');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    document.getElementById('processing-note').hidden = false;
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CompanyTwin AI{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+  <div class="topbar">
+    <a href="{% url 'company_select' %}" class="brand">Company<span>Twin</span> AI</a>
+    <nav aria-label="Main navigation">
+      {% if user.is_authenticated %}
+        <a href="{% url 'company_select' %}">Companies</a>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'profile_setup' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+      {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'signup' %}">Sign up</a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <main id="main-content" class="wrap">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}" role="status">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>CompanyTwin AI — Digital Twin Interview Simulator · Final Year Project</footer>
+</body>
+</html>

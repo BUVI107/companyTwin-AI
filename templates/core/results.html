@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Results — {{ session.company.name }} · CompanyTwin AI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Your results: {{ session.company.name }}</h1>
+  <p>Session completed {{ session.completed_at|date:"M d, Y H:i" }}</p>
+</div>
+
+{% if score %}
+<div class="score-grid">
+  <div class="score-box {% if score.fit_score >= 60 %}good{% elif score.fit_score < 40 %}warn{% endif %}">
+    <div class="num">{{ score.fit_score }}</div>
+    <div class="label">Company Fit Score</div>
+  </div>
+  <div class="score-box {% if score.technical_score >= 60 %}good{% elif score.technical_score < 40 %}warn{% endif %}">
+    <div class="num">{{ score.technical_score }}</div>
+    <div class="label">Technical Readiness</div>
+  </div>
+  <div class="score-box {% if score.hr_score >= 60 %}good{% elif score.hr_score < 40 %}warn{% endif %}">
+    <div class="num">{{ score.hr_score }}</div>
+    <div class="label">HR / Behavioral</div>
+  </div>
+  <div class="score-box {% if score.confidence_score >= 60 %}good{% elif score.confidence_score < 40 %}warn{% endif %}">
+    <div class="num">{{ score.confidence_score }}</div>
+    <div class="label">Confidence Score</div>
+  </div>
+</div>
+<div class="card">
+  <strong>Weak areas to focus on:</strong> {{ score.weak_areas }}
+</div>
+{% else %}
+<div class="alert">Scores are still being computed for this session.</div>
+{% endif %}
+
+<h2 style="margin-top:var(--space-6);">Transcript</h2>
+{% for r in responses %}
+  <div class="card transcript-item">
+    <span class="persona-tag">{{ r.persona_type|title }}</span>
+    <p><span class="qa-label">Q:</span> {{ r.question }}</p>
+    <p><span class="qa-label">A:</span> {{ r.answer|default:"(no answer)" }}</p>
+    <p class="transcript-meta">
+      Response time: {{ r.response_time_seconds }}s · Sentiment: {{ r.sentiment_score }} · Confidence: {{ r.confidence_score }}
+    </p>
+  </div>
+{% endfor %}
+
+<div class="btn-row">
+  <a href="{% url 'dashboard' %}" class="btn">View Dashboard</a>
+  <a href="{% url 'company_select' %}" class="btn btn-outline">Practice another company</a>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Your Profile · CompanyTwin AI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Your skills profile</h1>
+  <p>Used to calculate your Company Fit Score against each target company's tech stack.</p>
+</div>
+<form method="post" class="stack">
+  {% csrf_token %}
+  <div class="field">
+    <label for="target_role">Target role</label>
+    <input type="text" id="target_role" name="target_role" value="{{ profile.target_role }}">
+  </div>
+  <div class="field">
+    <label for="skills">Skills (comma separated)</label>
+    <textarea id="skills" name="skills" placeholder="Java, Python, Django, SQL, React" aria-describedby="skills-help">{{ profile.skills }}</textarea>
+    <p id="skills-help" class="helptext">Matched against each company's tech stack to compute your fit score.</p>
+  </div>
+  <button type="submit" class="btn">Save profile</button>
+</form>
+{% endblock %}

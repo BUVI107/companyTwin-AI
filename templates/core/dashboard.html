@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · CompanyTwin AI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Your readiness dashboard</h1>
+  <p>Compare how you scored across every company you've practiced with.</p>
+</div>
+
+{% if sessions %}
+<div class="card">
+  <h2 style="margin-bottom:var(--space-4);">Readiness comparison</h2>
+  <canvas id="radarChart" height="120" role="img" aria-label="Radar chart comparing fit, technical, and HR scores across companies practiced"></canvas>
+</div>
+
+<h2 style="margin-top:var(--space-6);">Session history</h2>
+{% for s in sessions %}
+  <div class="session-row">
+    <div>
+      <div class="company-name">{{ s.company.name }}</div>
+      <div class="session-date">{{ s.started_at|date:"M d, Y" }}</div>
+    </div>
+    <div>Fit: {{ s.score.fit_score }} · <a href="{% url 'results' s.id %}">View</a></div>
+  </div>
+{% endfor %}
+{% else %}
+<div class="empty-state">
+  <p>No completed sessions yet.</p>
+  <a href="{% url 'company_select' %}" class="btn">Start your first interview</a>
+</div>
+{% endif %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+  const data = {{ chart_data_json|safe }};
+  const ctx = document.getElementById('radarChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: data.labels,
+        datasets: [
+          {
+            label: 'Fit Score',
+            data: data.fit,
+            backgroundColor: 'rgba(51,104,160,0.25)',
+            borderColor: '#3368A0',
+          },
+          {
+            label: 'Technical',
+            data: data.technical,
+            backgroundColor: 'rgba(102,163,191,0.25)',
+            borderColor: '#66A3BF',
+          },
+          {
+            label: 'HR / Behavioral',
+            data: data.hr,
+            backgroundColor: 'rgba(200,223,219,0.4)',
+            borderColor: '#8fb5ae',
+          },
+        ]
+      },
+      options: {
+        scales: { r: { min: 0, max: 100 } }
+      }
+    });
+  }
+</script>
+{% endblock %}

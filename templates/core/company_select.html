@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Choose a Company · CompanyTwin AI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Choose a company to practice for</h1>
+  <p>Each panel is generated from that company's real tech stack, tone, and typical interview style.</p>
+</div>
+
+{% if companies %}
+<div class="grid" role="list" aria-label="Available companies">
+  {% for company in companies %}
+    <article class="company-card" role="listitem">
+      <h3>{{ company.name }}</h3>
+      <div class="industry">{{ company.industry }}</div>
+      <div class="badge-row">
+        <span class="badge diff-{{ company.difficulty_level }}">{{ company.get_difficulty_level_display }}</span>
+        {% for tag in company.tags_list %}
+          <span class="badge">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      <div class="stack-line">
+        <strong>Stack:</strong> {{ company.tech_stack }}
+      </div>
+      <a href="{% url 'start_session' company.id %}" class="btn" aria-label="Start interview for {{ company.name }}">Start Interview</a>
+    </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <p>No companies configured yet. Add some via the Django admin panel.</p>
+</div>
+{% endif %}
+
+{% if past_sessions %}
+<h2 style="margin-top:var(--space-7);">Your past sessions</h2>
+{% for s in past_sessions %}
+  <div class="session-row">
+    <div>
+      <div class="company-name">{{ s.company.name }}</div>
+      <div class="session-date">{{ s.started_at|date:"M d, Y" }}</div>
+    </div>
+    <div>Fit score: {{ s.score.fit_score|default:"–" }} · <a href="{% url 'results' s.id %}">View results</a></div>
+  </div>
+{% endfor %}
+{% endif %}
+{% endblock %}

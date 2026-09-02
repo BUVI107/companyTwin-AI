@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Sign up · CompanyTwin AI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Create your account</h1>
+  <p>Start practicing with company-specific digital twin interviews.</p>
+</div>
+<form method="post" class="stack">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn">Sign up</button>
+</form>
+<p style="margin-top:16px;">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+{% endblock %}

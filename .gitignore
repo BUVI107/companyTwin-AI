@@ -1,0 +1,27 @@
+# Secrets — never commit
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+env/
+.venv/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+media/
+
+# ML model artifact — regenerated automatically on first prediction
+# (safe to keep in git if you want the trained model versioned instead)
+core/ml/fit_model.joblib
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
